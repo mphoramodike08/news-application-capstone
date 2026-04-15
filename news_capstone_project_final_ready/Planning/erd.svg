@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800">
+    <defs>
+      <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+        <path d="M0,0 L0,6 L9,3 z" fill="#44556f"/>
+      </marker>
+    </defs>
+    <rect width="100%" height="100%" fill="#f8fbff"/>
+    <text x="40" y="50" font-family="Arial" font-size="28" font-weight="700" fill="#122033">Entity Relationship Diagram – News Application</text>
+    <rect x="80" y="130" width="250" height="150" rx="14" fill="#ffffff" stroke="#3558b8" stroke-width="2"/><text x="98" y="165" font-family="Arial" font-size="20" font-weight="700" fill="#122033">CustomUser
+- username
+- email
+- role</text><rect x="460" y="90" width="250" height="170" rx="14" fill="#ffffff" stroke="#3558b8" stroke-width="2"/><text x="478" y="125" font-family="Arial" font-size="20" font-weight="700" fill="#122033">Publisher
+- name
+- description
+M2M subscribers
+M2M editors
+M2M journalists</text><rect x="830" y="120" width="250" height="160" rx="14" fill="#ffffff" stroke="#3558b8" stroke-width="2"/><text x="848" y="155" font-family="Arial" font-size="20" font-weight="700" fill="#122033">Article
+- title
+- content
+- approved
+- approved_at
+FK author
+FK publisher</text><rect x="460" y="420" width="280" height="180" rx="14" fill="#ffffff" stroke="#3558b8" stroke-width="2"/><text x="478" y="455" font-family="Arial" font-size="20" font-weight="700" fill="#122033">Newsletter
+- title
+- content
+- created_at
+FK created_by
+FK publisher
+M2M articles</text><line x1="330" y1="205" x2="460" y2="175" stroke="#44556f" stroke-width="2" marker-end="url(#arrow)"/><text x="395.0" y="182.0" text-anchor="middle" font-family="Arial" font-size="14" fill="#44556f">M2M subscriptions / staff</text><line x1="710" y1="175" x2="830" y2="200" stroke="#44556f" stroke-width="2" marker-end="url(#arrow)"/><text x="770.0" y="179.5" text-anchor="middle" font-family="Arial" font-size="14" fill="#44556f">1 publisher : many articles</text><line x1="205" y1="280" x2="830" y2="245" stroke="#44556f" stroke-width="2" marker-end="url(#arrow)"/><text x="517.5" y="254.5" text-anchor="middle" font-family="Arial" font-size="14" fill="#44556f">1 author : many articles</text><line x1="585" y1="260" x2="600" y2="420" stroke="#44556f" stroke-width="2" marker-end="url(#arrow)"/><text x="592.5" y="332.0" text-anchor="middle" font-family="Arial" font-size="14" fill="#44556f">1 publisher : many newsletters</text><line x1="205" y1="280" x2="520" y2="470" stroke="#44556f" stroke-width="2" marker-end="url(#arrow)"/><text x="362.5" y="367.0" text-anchor="middle" font-family="Arial" font-size="14" fill="#44556f">1 creator : many newsletters</text><line x1="830" y1="520" x2="740" y2="520" stroke="#44556f" stroke-width="2" marker-end="url(#arrow)"/><text x="785.0" y="512.0" text-anchor="middle" font-family="Arial" font-size="14" fill="#44556f">M2M includes articles</text>
+    </svg>

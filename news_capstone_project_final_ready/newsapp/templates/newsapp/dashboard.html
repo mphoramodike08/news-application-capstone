@@ -1,0 +1,181 @@
+{% extends "newsapp/base.html" %}
+{% block title %}Dashboard | News Application{% endblock %}
+{% block content %}
+<section class="card hero-card dashboard-hero">
+    <div>
+        <p class="eyebrow">User dashboard</p>
+        <h2>Welcome, {{ request.user.username }}</h2>
+        <p class="muted">Role: <strong>{{ request.user.get_role_display }}</strong></p>
+    </div>
+
+    <div class="action-group">
+        {% if request.user.role == 'editor' %}
+            <a href="{% url 'publisher_create' %}" class="button button-primary">Create Publisher</a>
+            <a href="{% url 'newsletter_create' %}" class="button button-secondary">Create Newsletter</a>
+        {% endif %}
+
+        {% if request.user.role == 'journalist' %}
+            <a href="{% url 'article_create' %}" class="button button-primary">Create Article</a>
+            <a href="{% url 'newsletter_create' %}" class="button button-secondary">Create Newsletter</a>
+        {% endif %}
+    </div>
+</section>
+
+<section class="dashboard-grid">
+    <div class="card panel">
+        <div class="section-heading">
+            {% if request.user.role == 'reader' %}
+                <h3>Subscribed Articles</h3>
+                <p class="muted">Approved articles from your subscribed publishers and journalists.</p>
+            {% elif request.user.role == 'editor' %}
+                <h3>All Articles</h3>
+                <p class="muted">Review, approve, edit, and delete submissions.</p>
+            {% else %}
+                <h3>Your Articles</h3>
+                <p class="muted">Manage your submissions and editor approvals.</p>
+            {% endif %}
+        </div>
+
+        {% if user_articles %}
+            <div class="item-list">
+                {% for article in user_articles %}
+                    <div class="list-card">
+                        <div>
+                            <h4>{{ article.title }}</h4>
+                            <p class="meta-text">
+                                {{ article.publication_label }}
+                                {% if request.user.role == 'editor' %}
+                                    · {{ article.author.username }}
+                                {% endif %}
+                                · {{ article.created_at|date:"d M Y" }}
+                            </p>
+                            {% if article.approved %}
+                                <span class="badge badge-success">Approved</span>
+                            {% else %}
+                                <span class="badge badge-warning">Pending approval</span>
+                            {% endif %}
+                        </div>
+
+                        <div class="action-links">
+                            {% if request.user.role == 'editor' or request.user.role == 'journalist' %}
+                                <a href="{% url 'article_update' article.pk %}">Edit</a>
+                                <a href="{% url 'article_delete' article.pk %}">Delete</a>
+                            {% endif %}
+                            {% if request.user.role == 'editor' and not article.approved %}
+                                <a href="{% url 'article_approve' article.pk %}">Approve</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <p>No articles available.</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="card panel">
+        <div class="section-heading">
+            {% if request.user.role == 'reader' %}
+                <h3>Subscribed Newsletters</h3>
+                <p class="muted">Newsletters from your subscribed publishers and journalists.</p>
+            {% elif request.user.role == 'editor' %}
+                <h3>All Newsletters</h3>
+                <p class="muted">Manage all newsletters in the system.</p>
+            {% else %}
+                <h3>Your Newsletters</h3>
+                <p class="muted">Create curated collections for readers.</p>
+            {% endif %}
+        </div>
+
+        {% if user_newsletters %}
+            <div class="item-list">
+                {% for newsletter in user_newsletters %}
+                    <div class="list-card">
+                        <div>
+                            <h4>{{ newsletter.title }}</h4>
+                            <p class="meta-text">
+                                {{ newsletter.publisher.name|default:"Independent" }}
+                                {% if request.user.role == 'editor' %}
+                                    · {{ newsletter.author.username }}
+                                {% endif %}
+                                · {{ newsletter.created_at|date:"d M Y" }}
+                            </p>
+                        </div>
+                        <div class="action-links">
+                            {% if request.user.role == 'editor' or request.user.role == 'journalist' %}
+                                <a href="{% url 'newsletter_update' newsletter.pk %}">Edit</a>
+                                <a href="{% url 'newsletter_delete' newsletter.pk %}">Delete</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <p>No newsletters available.</p>
+            </div>
+        {% endif %}
+    </div>
+</section>
+
+<section class="card panel section-block">
+    <div class="section-heading">
+        <h3>Publishers</h3>
+        <p class="muted">Available publishers in the system.</p>
+    </div>
+    {% if publishers %}
+        <div class="publisher-grid">
+            {% for publisher in publishers %}
+                <div class="publisher-tile">
+                    <h4>{{ publisher.name }}</h4>
+                    <p>{{ publisher.description|default:"No description provided."|truncatechars:110 }}</p>
+                    <div class="action-links">
+                        {% if request.user.role == 'reader' %}
+                            <a href="{% url 'toggle_publisher_subscription' publisher.pk %}">
+                                {% if publisher in request.user.subscribed_publishers.all %}Unsubscribe{% else %}Subscribe{% endif %}
+                            </a>
+                        {% endif %}
+                        {% if request.user.role == 'editor' %}
+                            <a href="{% url 'publisher_update' publisher.pk %}">Edit publisher</a>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <p>No publishers created yet.</p>
+        </div>
+    {% endif %}
+</section>
+
+{% if request.user.role == 'reader' %}
+<section class="card panel section-block">
+    <div class="section-heading">
+        <h3>Journalists</h3>
+        <p class="muted">Subscribe to individual journalists.</p>
+    </div>
+    {% if journalists %}
+        <div class="publisher-grid">
+            {% for journalist in journalists %}
+                <div class="publisher-tile">
+                    <h4>{{ journalist.username }}</h4>
+                    <p>{{ journalist.email }}</p>
+                    <div class="action-links">
+                        <a href="{% url 'toggle_journalist_subscription' journalist.pk %}">
+                            {% if journalist in request.user.subscribed_journalists.all %}Unsubscribe{% else %}Subscribe{% endif %}
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <p>No journalists available yet.</p>
+        </div>
+    {% endif %}
+</section>
+{% endif %}
+{% endblock %}

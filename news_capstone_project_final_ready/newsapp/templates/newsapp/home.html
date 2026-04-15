@@ -1,0 +1,72 @@
+{% extends "newsapp/base.html" %}
+{% block title %}Home | News Application{% endblock %}
+{% block content %}
+<section class="hero card hero-card">
+    <div>
+        <p class="eyebrow">Approved news feed</p>
+        <h2>Read trusted articles and curated newsletters.</h2>
+        <p class="muted">Readers can browse approved content, journalists can publish stories, and editors can control the approval workflow.</p>
+    </div>
+    <div class="stats-grid">
+        <div class="stat-box">
+            <span class="stat-number">{{ articles|length }}</span>
+            <span class="stat-label">Approved articles</span>
+        </div>
+        <div class="stat-box">
+            <span class="stat-number">{{ newsletters|length }}</span>
+            <span class="stat-label">Newsletters</span>
+        </div>
+    </div>
+</section>
+
+<section class="section-block">
+    <div class="section-heading">
+        <h2>Approved Articles</h2>
+        <p class="muted">Only editor-approved content is visible here.</p>
+    </div>
+    <div class="card-grid">
+        {% for article in articles %}
+            <article class="card content-card">
+                <div class="card-header-row">
+                    <span class="badge badge-success">Approved</span>
+                    <span class="muted small-text">{{ article.created_at|date:"d M Y" }}</span>
+                </div>
+                <h3>{{ article.title }}</h3>
+                <p class="meta-text">By {{ article.author.username }} · {{ article.publication_label }}</p>
+                <p>{{ article.content|truncatechars:180 }}</p>
+            </article>
+        {% empty %}
+            <div class="empty-state card">
+                <h3>No approved articles yet</h3>
+                <p>Once editors approve submissions, they will appear here.</p>
+            </div>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="section-block">
+    <div class="section-heading">
+        <h2>Newsletters</h2>
+        <p class="muted">Curated collections created by journalists and editors.</p>
+    </div>
+    <div class="card-grid">
+        {% for newsletter in newsletters %}
+            <article class="card content-card">
+                <div class="card-header-row">
+                    <span class="badge">Newsletter</span>
+                    <span class="muted small-text">{{ newsletter.created_at|date:"d M Y" }}</span>
+                </div>
+                <h3>{{ newsletter.title }}</h3>
+                <p class="meta-text">By {{ newsletter.author.username }} · {{ newsletter.publisher.name|default:"Independent" }}</p>
+                <p>{{ newsletter.description|truncatechars:160 }}</p>
+                <p class="muted small-text">Articles included: {{ newsletter.articles.count }}</p>
+            </article>
+        {% empty %}
+            <div class="empty-state card">
+                <h3>No newsletters yet</h3>
+                <p>Create newsletters to group related approved articles for readers.</p>
+            </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

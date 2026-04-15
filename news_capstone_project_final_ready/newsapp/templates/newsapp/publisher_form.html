@@ -1,0 +1,18 @@
+{% extends "newsapp/base.html" %}
+{% block title %}Create Publisher | News Application{% endblock %}
+{% block content %}
+<section class="card form-card">
+    <div class="section-heading">
+        <p class="eyebrow">Editor tools</p>
+        <h2>Create Publisher</h2>
+    </div>
+    <form method="post" class="styled-form">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <div class="action-group">
+            <button type="submit" class="button button-primary">Create Publisher</button>
+            <a href="{% url 'dashboard' %}" class="button button-secondary">Cancel</a>
+        </div>
+    </form>
+</section>
+{% endblock %}

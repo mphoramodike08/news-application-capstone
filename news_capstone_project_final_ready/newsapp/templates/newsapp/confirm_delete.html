@@ -1,0 +1,16 @@
+{% extends "newsapp/base.html" %}
+{% block title %}Delete {{ type|title }} | News Application{% endblock %}
+{% block content %}
+<section class="card form-card">
+    <div class="section-heading">
+        <p class="eyebrow">Delete confirmation</p>
+        <h2>Delete {{ type|title }}</h2>
+    </div>
+    <p>Are you sure you want to delete <strong>{{ object }}</strong>?</p>
+    <form method="post" class="action-group">
+        {% csrf_token %}
+        <button type="submit" class="button button-danger">Delete</button>
+        <a href="{% url 'dashboard' %}" class="button button-secondary">Cancel</a>
+    </form>
+</section>
+{% endblock %}
